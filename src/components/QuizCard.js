@@ -1,8 +1,8 @@
-"use client";
-import { useState, useEffect } from "react";
-import ProgressBar from "./ProgressBar";
-import DifficultyStars from "./DifficultyStars";
-import fetchQuestions from "../data/questions.js";
+"use client"
+import { useState, useEffect } from "react"
+import ProgressBar from "./ProgressBar"
+import DifficultyStars from "./DifficultyStars"
+import fetchQuestions from "../data/questions.js"
 
 function QuizCard({
   currentQuestionNumber,
@@ -13,34 +13,33 @@ function QuizCard({
   onNextQuestion,
   score,
   maxScore,
+  minScore,
 }) {
-  const [questions, setQuestions] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadQuestions = async () => {
-      const fetchedQuestions = await fetchQuestions();
-      setQuestions(fetchedQuestions);
-      setLoading(false);
-    };
-    loadQuestions();
-  }, []);
+      const fetchedQuestions = await fetchQuestions()
+      setQuestions(fetchedQuestions)
+      setLoading(false)
+    }
+    loadQuestions()
+  }, [])
 
   if (loading) {
-    return <div className="quiz-card">Loading questions...</div>;
+    return <div className="quiz-card">Loading questions...</div>
   }
 
-  const question = questions[currentQuestionNumber - 1];
+  const question = questions[currentQuestionNumber - 1]
   if (!question) {
-    return <div className="quiz-card">No more questions.</div>;
+    return <div className="quiz-card">No more questions.</div>
   }
 
-  const progressPercentage = (currentQuestionNumber / totalQuestions) * 100;
+  const progressPercentage = (currentQuestionNumber / totalQuestions) * 100
 
   // Combine correct and incorrect answers, then shuffle them
-  const options = [...question.incorrect_answers, question.correct_answer].sort(
-    () => Math.random() - 0.5
-  );
+  const options = [...question.incorrect_answers, question.correct_answer].sort(() => Math.random() - 0.5)
 
   return (
     <div className="quiz-card">
@@ -67,11 +66,7 @@ function QuizCard({
           <button
             key={index}
             className={`answer-button ${
-              selectedAnswer === option
-                ? option === question.correct_answer
-                  ? "correct"
-                  : "incorrect"
-                : ""
+              selectedAnswer === option ? (option === question.correct_answer ? "correct" : "incorrect") : ""
             } ${selectedAnswer && option === question.correct_answer ? "correct" : ""}`}
             onClick={() => !selectedAnswer && onAnswerSelect(option)}
             disabled={selectedAnswer !== null}
@@ -92,13 +87,15 @@ function QuizCard({
 
       <div className="score-container">
         <div className="score-text">
+          <span>Min Score: {minScore}%</span>
           <span>Score: {score}%</span>
           <span>Max Score: {maxScore}%</span>
         </div>
-        <ProgressBar percentage={score} maxPercentage={maxScore} isScore={true} />
+        <ProgressBar percentage={score} maxPercentage={maxScore} minPercentage={minScore} isScore={true} />
       </div>
     </div>
-  );
+  )
 }
 
-export default QuizCard;
+export default QuizCard
+

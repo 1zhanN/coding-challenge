@@ -1,68 +1,72 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import "./App.css";
-import QuizCard from "./components/QuizCard";
-import fetchQuestions from "./data/questions"; // Ensure fetchQuestions returns a promise
-import FinalScore from "./components/FinalScore";
+import { useState, useEffect } from "react"
+import "./App.css"
+import QuizCard from "./components/QuizCard"
+import fetchQuestions from "./data/questions" // Ensure fetchQuestions returns a promise
+import FinalScore from "./components/FinalScore"
 
 function App() {
-  const [questions, setQuestions] = useState([]);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [score, setScore] = useState(0);
-  const [answeredQuestions, setAnsweredQuestions] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState(null);
-  const [isCorrect, setIsCorrect] = useState(null);
-  const [quizComplete, setQuizComplete] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [questions, setQuestions] = useState([])
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
+  const [score, setScore] = useState(0)
+  const [answeredQuestions, setAnsweredQuestions] = useState(0)
+  const [selectedAnswer, setSelectedAnswer] = useState(null)
+  const [isCorrect, setIsCorrect] = useState(null)
+  const [quizComplete, setQuizComplete] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const loadQuestions = async () => {
-      setLoading(true);
-      const fetchedQuestions = await fetchQuestions(); // Fetch questions asynchronously
-      setQuestions(fetchedQuestions);
-      setLoading(false);
-    };
-    loadQuestions();
-  }, []);
+      setLoading(true)
+      const fetchedQuestions = await fetchQuestions() // Fetch questions asynchronously
+      setQuestions(fetchedQuestions)
+      setLoading(false)
+    }
+    loadQuestions()
+  }, [])
 
   if (loading) {
-    return <div className="app">Loading quiz...</div>;
+    return <div className="app">Loading quiz...</div>
   }
 
-  const currentQuestion = questions[currentQuestionIndex];
+  const currentQuestion = questions[currentQuestionIndex]
 
   const handleAnswerSelect = (answer) => {
-    setSelectedAnswer(answer);
-    const correct = answer === currentQuestion.correct_answer;
-    setIsCorrect(correct);
+    setSelectedAnswer(answer)
+    const correct = answer === currentQuestion.correct_answer
+    setIsCorrect(correct)
 
     if (correct) {
-      setScore(score + 1);
+      setScore(score + 1)
     }
 
-    setAnsweredQuestions(answeredQuestions + 1);
-  };
+    setAnsweredQuestions(answeredQuestions + 1)
+  }
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex === questions.length - 1) {
-      setQuizComplete(true);
+      setQuizComplete(true)
     } else {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-      setSelectedAnswer(null);
-      setIsCorrect(null);
+      setCurrentQuestionIndex(currentQuestionIndex + 1)
+      setSelectedAnswer(null)
+      setIsCorrect(null)
     }
-  };
+  }
 
   const calculateScorePercentage = () => {
-    return Math.round((score / answeredQuestions) * 100) || 0;
-  };
+    return Math.round((score / answeredQuestions) * 100) || 0
+  }
 
   const calculateMaxScorePercentage = () => {
-    const remainingQuestions = questions.length - answeredQuestions;
-    const maxPossibleScore = score + remainingQuestions;
-    return Math.round((maxPossibleScore / questions.length) * 100);
-  };
+    const remainingQuestions = questions.length - answeredQuestions
+    const maxPossibleScore = score + remainingQuestions
+    return Math.round((maxPossibleScore / questions.length) * 100)
+  }
+
+  const calculateMinScorePercentage = () => {
+    return Math.round((score / questions.length) * 100)
+  }
 
   return (
     <div className="app">
@@ -77,6 +81,7 @@ function App() {
           onNextQuestion={handleNextQuestion}
           score={calculateScorePercentage()}
           maxScore={calculateMaxScorePercentage()}
+          minScore={calculateMinScorePercentage()}
         />
       ) : (
         <FinalScore
@@ -84,17 +89,18 @@ function App() {
           totalQuestions={questions.length}
           percentage={calculateScorePercentage()}
           onRestart={() => {
-            setCurrentQuestionIndex(0);
-            setScore(0);
-            setAnsweredQuestions(0);
-            setSelectedAnswer(null);
-            setIsCorrect(null);
-            setQuizComplete(false);
+            setCurrentQuestionIndex(0)
+            setScore(0)
+            setAnsweredQuestions(0)
+            setSelectedAnswer(null)
+            setIsCorrect(null)
+            setQuizComplete(false)
           }}
         />
       )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
+

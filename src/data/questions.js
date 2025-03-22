@@ -9,6 +9,7 @@ const fetchQuestions = async () => {
     const data = await response.json();
 
     // Process & format the fetched data
+    
     return data.map((item, index) => ({
       id: index + 1,
       question: decodeURIComponent(item.question),
